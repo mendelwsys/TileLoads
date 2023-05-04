@@ -28,12 +28,32 @@ new MBTiles(mbTilePath+'tstfile.mbtiles?mode=rwc', function(err, mbtiles)
         {
             if (completed.written === completed.startFiles)
             {
-                mbtiles.stopWriting(function (err)
+
+                var exampleInfo = {
+                    name: "moscow-world",
+                    description:"moscow tiles",
+                    tile_format:"PNG",
+                    scheme: 'xyz',
+                    version: "1",
+                    // minzoom: 13,
+                    // maxzoom: 16,
+                    center: [4952.5,2561.5,13],
+                    bounds: [37.6059,55.6394,37.6879,55.7867],
+                    type: "overlay",
+                    // "json": `{"vector_layers": [ { "id": "raster_moscow01", "description": "", "minzoom": 13, "maxzoom": 16, "fields": {} } ] }`
+                };
+
+                mbtiles.putInfo(exampleInfo, function(err)
                 {
-                    completed.stopped = true;
                     if (err) throw err;
-                    fs.readdirSync(pathPrefix).forEach(verifyFolder)
+                    mbtiles.stopWriting(function (err)
+                    {
+                        completed.stopped = true;
+                        // fs.readdirSync(pathPrefix).forEach(verifyFolder)
+                    });
                 });
+
+
             }
             else
                 setTimeout( myf,10)
@@ -64,9 +84,7 @@ new MBTiles(mbTilePath+'tstfile.mbtiles?mode=rwc', function(err, mbtiles)
 
         var tile = fs.readFileSync(pathPrefix+'/' + file);
         completed.startFiles++;
-        // mbtiles.putTile(coords[3] | 0, coords[1] | 0, coords[2] | 0,
         mbtiles.putTile(coords[1] | 0, coords[2] | 0, coords[3] | 0,            tile,
-
                 function (err) {
             if (err) throw err;
             completed.written++;
