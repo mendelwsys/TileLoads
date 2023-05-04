@@ -48,6 +48,7 @@ new MBTiles(mbTilePath+'tstfile.mbtiles?mode=rwc', function(err, mbtiles)
                     if (err) throw err;
                     mbtiles.stopWriting(function (err)
                     {
+                        if (err) throw err;
                         completed.stopped = true;
                         // fs.readdirSync(pathPrefix).forEach(verifyFolder)
                     });
