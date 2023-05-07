@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@mapbox/mbtiles": "^0.12.1",
+    "get-pixels": "^3.3.3",
     "sqlite3": "^5.1.6",
     "tape": "^5.6.3"
   }

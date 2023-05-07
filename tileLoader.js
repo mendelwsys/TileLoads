@@ -159,7 +159,7 @@ const TileLoader=function
             this.pErrMap = pErrMap;
 
         }
-        this.startLoadTz(this.desc.zoom[0]);
+        this.startLoadTz(this.desc.files.zoom[0]);
     }
 
     this.currentZoom=-1;
@@ -169,7 +169,7 @@ const TileLoader=function
 
         if (tz<=this.currentZoom)
             return;
-        if (tz>this.desc.zoom[1])
+        if (tz>this.desc.files.zoom[1])
         {
             this.currentZoom=tz;
             if (this.callBack!==undefined)
@@ -233,20 +233,17 @@ const TileLoader=function
         const isHttps = url.protocol.startsWith("https");
         const options =
         {
-            hostname: url.hostname,
-            port: (url.port==null || url.port==="")?(isHttps?443:80):parseInt(url.port),
-            path: url.pathname,
+            // hostname: url.hostname,
+            // port: (url.port==null || url.port==="")?(isHttps?443:80):parseInt(url.port),
+            // path: url.pathname,
             method: 'GET',
             timeout: 6000,
-            headers: {
-                'Accept':desc.files.options.constructorOptions.format,
-                'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
-            }
+            headers: desc.files.headers
         }
 
         const requester=isHttps?https:http;
-        requester.get(options, (res) =>
+
+        requester.get(url.href,options, (res) =>
         {
 
             if (res.statusCode !== 200)
@@ -273,7 +270,9 @@ const TileLoader=function
 
                 if (!fs.existsSync(path))
                     fs.mkdirSync(path,{ recursive: true });
-                fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.x+'_'+tile.y+'.png',data.read());
+                // fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.x+'_'+tile.y+'.png',data.read());
+                // fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.png',data.read());
+                fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.jpg',data.read());
 
                 if (arrTiles.length===0)
                 {
