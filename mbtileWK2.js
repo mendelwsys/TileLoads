@@ -5,9 +5,11 @@ var tape = require('tape');
 var fs = require('fs');
 var MBTiles = require('@mapbox/mbtiles');
 
+const nmFTiles='msk'
 // const nmFTiles='kirles_bg'
 // const nmFTiles='kirles'
-const nmFTiles='RosReestr_bg';
+// const nmFTiles='RosReestr_bg';
+// const nmFTiles='ArcGIS_bg';
 
 const mbtilesModeRwc = nmFTiles;
 const startImgWith = 'RASTER_'+nmFTiles+'_';
@@ -43,8 +45,11 @@ new MBTiles(mbTilePath+ mbtilesModeRwc + '.mbtiles?mode=rwc', function(err, mbti
                     version: "1",
                     // minzoom: 13,
                     // maxzoom: 16,
-                    center: [48,17,6],
-                    bounds: [82,50,103,71],
+                    // center: [48,17,6],
+                    // bounds: [82,50,103,71],
+                    center: [4952.5,2561.5,13],
+                    bounds: [37.6059,55.6394,37.6879,55.7867],
+
                     // type:"baselayer",
                     type: "overlay",
                     // "json": `{"vector_layers": [ { "id": "raster_moscow01", "description": "", "minzoom": 13, "maxzoom": 16, "fields": {} } ] }`
@@ -81,8 +86,8 @@ new MBTiles(mbTilePath+ mbtilesModeRwc + '.mbtiles?mode=rwc', function(err, mbti
     }
     function insertTile(pathPrefix,file)
     {
-        // let regExpStr = "^"+startImgWith+"(\\d+)_(\\d+)_(\\d+)\\.png$";
-        let regExpStr = "^"+startImgWith+"(\\d+)_(\\d+)_(\\d+)\\.jpg$";
+        let regExpStr = "^"+startImgWith+"(\\d+)_(\\d+)_(\\d+)\\.png$";
+        // let regExpStr = "^"+startImgWith+"(\\d+)_(\\d+)_(\\d+)\\.jpg$";
         let regExp = new RegExp(regExpStr);
         var coords = file.match(regExp);
 

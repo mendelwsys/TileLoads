@@ -1,7 +1,7 @@
 {
   "container": "mbtiles",
   "areaName": "Москва",
-  "date": "2023.05.02",
+  "date": "2023.05.07",
   "polygon": [
     [
       37.628,
@@ -30,13 +30,18 @@
     "source": "wmsTileService",
     "prefix": "RASTER_msk_",
     "url": "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
+    "headers": {
+      "Accept": "image/png",
+      "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0"
+    },
     "serversPrefix": [
       "",
       "a.",
       "b.",
       "c."
     ],
-    "nextScaleDelay": 10,
+    "nextScaleDelay": 100,
     "nextTileDelay": 10,
     "options": {
       "constructorOptions": {
@@ -47,11 +52,11 @@
         "layers": "msk"
       }
     },
+    "zoom": [
+      13,
+      16
+    ],
     "sfConverter": "function(pt)\r\n{\r\n        let res={};\r\n        res.x = 0.5 + pt.x / 360;\r\n        let z = Math.sin(pt.y * Math.PI / 180);\r\n        let c = 1 / (2 * Math.PI);\r\n        res.y = 0.5 - 0.5 * Math.log((1 + z) / (1 - z)) * c;\r\n        return res;\r\n    }",
     "sfCreateUrl": "function(tile)\r\n                {\r\n                   let tix = Math.floor(Math.random() * this.serversPrefix.length);\r\n                   let _url=this.url;\r\n                    _url=_url.replaceAll('{s.}',this.serversPrefix[tix])\r\n                    _url=_url.replaceAll(\"{z}\",tile.z)\r\n                    _url=_url.replaceAll(\"{y}\",tile.y)\r\n                    _url=_url.replaceAll(\"{x}\",tile.x)\r\n                    return _url;\r\n                }"
-  },
-  "zoom": [
-    13,
-    16
-  ]
+  }
 }

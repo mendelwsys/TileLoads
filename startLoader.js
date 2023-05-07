@@ -29,54 +29,54 @@ const TileModule = require('./tileLoader');
 
 var tasks=
 [
-    // {
-    //     container:"mbtiles",
-    //     areaName:"Москва",
-    //     date:"2023.05.4",
-    //     //Произвольный полигон для тетстирования, где-то в Москве
-    //     polygon:[[37.6280,55.7567],[37.6259,55.7502],[37.6459,55.7494],[37.6459,55.7494],[37.6441,55.7498]],
-    //     files:
-    //     {
-    //             name: "Тест Москва",
-    //             sysName: "moscow",
-    //             source: "wmsTileService",
-    //             prefix: "RASTER_msk_",
-    //             url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
-    //             headers:
-    //             {
-    //                 'Accept':'image/png',
-    //                 'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-    //                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
-    //             },
-    //             serversPrefix:['','a.','b.','c.'],
-    //             nextScaleDelay:100,
-    //             nextTileDelay:10,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                let tix = Math.floor(Math.random() * this.serversPrefix.length);
-    //                let _url=this.url;
-    //                 _url=_url.replaceAll('{s.}',this.serversPrefix[tix])
-    //                 _url=_url.replaceAll("{z}",tile.z)
-    //                 _url=_url.replaceAll("{y}",tile.y)
-    //                 _url=_url.replaceAll("{x}",tile.x)
-    //                 return _url;
-    //             },
-    //             fConverter:TileModule.lonLat2Tile3857,
-    //             options:
-    //             {
-    //                     constructorOptions:
-    //                     {
-    //                             srs: "EPSG%3A4326",
-    //                             format: "image/png",
-    //                             transparent: true,
-    //                             isTiff: false,
-    //                             layers: "msk"
-    //                     }
-    //             },
-    //             zoom:[13,16],
-    //     },
-    // },
-    // {
+    {
+        container:"mbtiles",
+        areaName:"Москва",
+        date:"2023.05.4",
+        //Произвольный полигон для тетстирования, где-то в Москве
+        polygon:[[37.6280,55.7567],[37.6259,55.7502],[37.6459,55.7494],[37.6459,55.7494],[37.6441,55.7498]],
+        files:
+        {
+                name: "Тест Москва",
+                sysName: "moscow",
+                source: "wmsTileService",
+                prefix: "RASTER_msk_",
+                url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
+                headers:
+                {
+                    'Accept':'image/png',
+                    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+                },
+                serversPrefix:['','a.','b.','c.'],
+                nextScaleDelay:100,
+                nextTileDelay:10,
+                fCreateUrl:function(tile)
+                {
+                   let tix = Math.floor(Math.random() * this.serversPrefix.length);
+                   let _url=this.url;
+                    _url=_url.replaceAll('{s.}',this.serversPrefix[tix])
+                    _url=_url.replaceAll("{z}",tile.z)
+                    _url=_url.replaceAll("{y}",tile.y)
+                    _url=_url.replaceAll("{x}",tile.x)
+                    return _url;
+                },
+                fConverter:TileModule.lonLat2Tile3857,
+                options:
+                {
+                        constructorOptions:
+                        {
+                                srs: "EPSG%3A4326",
+                                format: "image/png",
+                                transparent: true,
+                                isTiff: false,
+                                layers: "msk"
+                        }
+                },
+                zoom:[13,16],
+        },
+    }
+    // ,{
     //     container:"mbtiles",
     //     areaName:"KirLesBackGround",
     //     date:"2023.05.7",
@@ -122,54 +122,142 @@ var tasks=
     //                 },
     //             zoom:[6,7],
     //         },
-    // }
-    {
-        container:"mbtiles",
-        areaName:"RosReestrBackGround",
-        date:"2023.05.7",
-        //Произвольный полигон для тетстирования, где-то в Москве
-        polygon:[[82,50],[103,71]],
-        files:
-            {
-                name: "Тест РоссРеестр",
-                sysName: "rosreestr",
-                source: "wmsTileService",
-                prefix: "RASTER_RosReestr_bg_",
-                url: "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/",
-                headers:
-                    {
-                        'Accept':'image/jpeg',
-                        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
-                    },
-                nextScaleDelay:1000,
-                nextTileDelay:100,
-                fCreateUrl:function(tile)
-                {
-                    // ResultURL:=GetURLBase+inttostr(GetZ-1)+'/'+inttostr(GetY)+'/'+inttostr(GetX);
-                    let _url=this.url;
-                    _url=_url+tile.z;
-                    _url=_url+'/'+tile.y;
-                    _url=_url+'/'+tile.x;
-                    return _url;
-                },
-                fConverter:TileModule.lonLat2Tile3857,
-                options:
-                    {
-                        constructorOptions:
-                            {
-                                srs: "EPSG%3A4326",
-                                format: "image/jpeg",
-                                transparent: true,
-                                isTiff: false,
-                                layers: "rosreestr"
-                            }
-                    },
-                zoom:[6,7],
-            },
-    }
-    // ,
+    // },
     // {
+    //     container:"mbtiles",
+    //     areaName:"RosReestrBackGround",
+    //     date:"2023.05.7",
+    //     //Произвольный полигон для тетстирования, где-то в Москве
+    //     polygon:[[82,50],[103,71]],
+    //     files:
+    //         {
+    //             name: "Тест РоссРеестр",
+    //             sysName: "rosreestr",
+    //             source: "wmsTileService",
+    //             prefix: "RASTER_RosReestr_bg_",
+    //             url: "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/",
+    //             headers:
+    //                 {
+    //                     'Accept':'image/jpeg',
+    //                     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    //                 },
+    //             nextScaleDelay:1000,
+    //             nextTileDelay:100,
+    //             fCreateUrl:function(tile)
+    //             {
+    //                 let _url=this.url;
+    //                 _url=_url+tile.z;
+    //                 _url=_url+'/'+tile.y;
+    //                 _url=_url+'/'+tile.x;
+    //                 return _url;
+    //             },
+    //             fConverter:TileModule.lonLat2Tile3857,
+    //             options:
+    //                 {
+    //                     constructorOptions:
+    //                         {
+    //                             srs: "EPSG%3A4326",
+    //                             format: "image/jpeg",
+    //                             transparent: true,
+    //                             isTiff: false,
+    //                             layers: "rosreestr"
+    //                         }
+    //                 },
+    //             zoom:[6,7],
+    //         },
+    // },
+    // {
+    //     container:"mbtiles",
+    //     areaName:"GoogleBackGround",
+    //     date:"2023.05.7",
+    //     //Произвольный полигон для тетстирования, где-то в Москве
+    //     polygon:[[82,50],[103,71]],
+    //     files:
+    //         {
+    //             name: "Тест Google",
+    //             sysName: "Google",
+    //             source: "wmsTileService",
+    //             prefix: "RASTER_Google_",
+    //             url: "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    //             headers:
+    //                 {
+    //                     'Accept':'image/jpeg,image/jpg',
+    //                     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    //                 },
+    //             nextScaleDelay:1000,
+    //             nextTileDelay:250,
+    //             fCreateUrl:function(tile)
+    //             {
+    //                let _url=this.url;
+    //                 _url=_url.replaceAll("{z}",tile.z)
+    //                 _url=_url.replaceAll("{y}",tile.y)
+    //                 _url=_url.replaceAll("{x}",tile.x)
+    //                 return _url;
+    //             },
+    //             fConverter:TileModule.lonLat2Tile3857,
+    //             options:
+    //                 {
+    //                     constructorOptions:
+    //                         {
+    //                             srs: "EPSG%3A4326",
+    //                             format: "image/jpeg",
+    //                             transparent: true,
+    //                             isTiff: false,
+    //                             layers: "ArcGIS"
+    //                         }
+    //                 },
+    //             zoom:[6,7],
+    //         },
+    // },
+    //
+    // {
+    //     container:"mbtiles",
+    //     areaName:"ArcGISBackGround",
+    //     date:"2023.05.7",
+    //     //Произвольный полигон для тетстирования, где-то в Москве
+    //     polygon:[[82,50],[103,71]],
+    //     files:
+    //         {
+    //             name: "Тест ArcGIS",
+    //             sysName: "ArcGIS",
+    //             source: "wmsTileService",
+    //             prefix: "RASTER_ArcGIS_bg_",
+    //             url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/",
+    //             headers:
+    //                 {
+    //                     'Accept':'image/jpeg',
+    //                     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    //                 },
+    //             nextScaleDelay:1000,
+    //             nextTileDelay:500,
+    //             fCreateUrl:function(tile)
+    //             {
+    //                 let _url=this.url;
+    //                 _url=_url+tile.z;
+    //                 _url=_url+'/'+tile.y;
+    //                 _url=_url+'/'+tile.x;
+    //                 return _url;
+    //             },
+    //             fConverter:TileModule.lonLat2Tile3857,
+    //             options:
+    //                 {
+    //                     constructorOptions:
+    //                         {
+    //                             srs: "EPSG%3A4326",
+    //                             format: "image/jpeg",
+    //                             transparent: true,
+    //                             isTiff: false,
+    //                             layers: "ArcGIS"
+    //                         }
+    //                 },
+    //             zoom:[6,7],
+    //         },
+    // }
+    // ,
+    // ,{
     //     container:"mbtiles",
     //     areaName:"Кирлес",
     //     date:"2023.05.7",

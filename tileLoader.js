@@ -271,8 +271,8 @@ const TileLoader=function
                 if (!fs.existsSync(path))
                     fs.mkdirSync(path,{ recursive: true });
                 // fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.x+'_'+tile.y+'.png',data.read());
-                // fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.png',data.read());
-                fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.jpg',data.read());
+                fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.png',data.read());
+                // fs.writeFileSync(path+this.desc.files.prefix+tile.z+'_'+tile.y+'_'+tile.x+'.jpg',data.read());
 
                 if (arrTiles.length===0)
                 {
