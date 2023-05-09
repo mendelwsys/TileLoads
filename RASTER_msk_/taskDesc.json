@@ -1,62 +1,79 @@
 {
   "container": "mbtiles",
-  "areaName": "Москва",
-  "date": "2023.05.07",
+  "areaName": "Moscow",
+  "date": "2023.05.09",
   "polygon": [
     [
-      37.628,
-      55.7567
+      37.3,
+      55.3
     ],
     [
-      37.6259,
-      55.7502
-    ],
-    [
-      37.6459,
-      55.7494
-    ],
-    [
-      37.6459,
-      55.7494
-    ],
-    [
-      37.6441,
-      55.7498
+      38,
+      56
     ]
   ],
-  "files": {
-    "name": "Тест Москва",
-    "sysName": "moscow",
-    "source": "wmsTileService",
-    "prefix": "RASTER_msk_",
-    "url": "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
-    "headers": {
-      "Accept": "image/png",
-      "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0"
+  "files": [
+    {
+      "name": "Тест Москва",
+      "sysName": "moscowOS",
+      "source": "wmsTileService",
+      "prefix": "RASTER_msk_",
+      "url": "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "headers": {
+        "Accept": "image/png",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0"
+      },
+      "serversPrefix": [
+        "",
+        "a.",
+        "b.",
+        "c."
+      ],
+      "nextScaleDelay": 100,
+      "nextTileDelay": 10,
+      "options": {
+        "constructorOptions": {
+          "srs": "EPSG%3A4326",
+          "format": "image/png",
+          "transparent": true,
+          "isTiff": false,
+          "layers": "msk"
+        }
+      },
+      "zoom": [
+        6,
+        8
+      ],
+      "sfConverter": "function(pt)\r\n{\r\n        let res={};\r\n        res.x = 0.5 + pt.x / 360;\r\n        let z = Math.sin(pt.y * Math.PI / 180);\r\n        let c = 1 / (2 * Math.PI);\r\n        res.y = 0.5 - 0.5 * Math.log((1 + z) / (1 - z)) * c;\r\n        return res;\r\n    }",
+      "sfCreateUrl": "function (tile)\r\n{\r\n    let _url=this.url;\r\n    if (this.serversPrefix)\r\n    {\r\n        let tix = Math.floor(Math.random() * this.serversPrefix.length);\r\n        _url=_url.replaceAll('{s.}',this.serversPrefix[tix])\r\n    }\r\n    _url=_url.replaceAll(\"{z}\",tile.z)\r\n    _url=_url.replaceAll(\"{y}\",tile.y)\r\n    _url=_url.replaceAll(\"{x}\",tile.x)\r\n    return _url;\r\n}"
     },
-    "serversPrefix": [
-      "",
-      "a.",
-      "b.",
-      "c."
-    ],
-    "nextScaleDelay": 100,
-    "nextTileDelay": 10,
-    "options": {
-      "constructorOptions": {
-        "srs": "EPSG%3A4326",
-        "format": "image/png",
-        "transparent": true,
-        "isTiff": false,
-        "layers": "msk"
-      }
-    },
-    "zoom": [
-      13,
-      16
-    ],
-    "sfConverter": "function(pt)\r\n{\r\n        let res={};\r\n        res.x = 0.5 + pt.x / 360;\r\n        let z = Math.sin(pt.y * Math.PI / 180);\r\n        let c = 1 / (2 * Math.PI);\r\n        res.y = 0.5 - 0.5 * Math.log((1 + z) / (1 - z)) * c;\r\n        return res;\r\n    }",
-    "sfCreateUrl": "function(tile)\r\n                {\r\n                   let tix = Math.floor(Math.random() * this.serversPrefix.length);\r\n                   let _url=this.url;\r\n                    _url=_url.replaceAll('{s.}',this.serversPrefix[tix])\r\n                    _url=_url.replaceAll(\"{z}\",tile.z)\r\n                    _url=_url.replaceAll(\"{y}\",tile.y)\r\n                    _url=_url.replaceAll(\"{x}\",tile.x)\r\n                    return _url;\r\n                }"
-  }
+    {
+      "name": "Тест РоссРеестр",
+      "sysName": "rosreestr",
+      "source": "wmsTileService",
+      "prefix": "RASTER_RosReestr_bg_",
+      "url": "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}",
+      "headers": {
+        "Accept": "image/jpeg",
+        "Accept-Language": "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0"
+      },
+      "nextScaleDelay": 600,
+      "nextTileDelay": 500,
+      "options": {
+        "constructorOptions": {
+          "srs": "EPSG%3A4326",
+          "format": "image/jpeg",
+          "transparent": true,
+          "isTiff": false,
+          "layers": "rosreestr"
+        }
+      },
+      "zoom": [
+        9,
+        12
+      ]
+    }
+  ]
 }

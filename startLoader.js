@@ -26,68 +26,23 @@
 
 
 const TileModule = require('./tileLoader');
+const TileWriter = require('./mbtile');
+const {TileLoader} = require("./tileLoader");
 
 var tasks=
 [
-    {
-        container:"mbtiles",
-        areaName:"Москва",
-        date:"2023.05.4",
-        //Произвольный полигон для тетстирования, где-то в Москве
-        polygon:[[37.6280,55.7567],[37.6259,55.7502],[37.6459,55.7494],[37.6459,55.7494],[37.6441,55.7498]],
-        files:
-        {
-                name: "Тест Москва",
-                sysName: "moscow",
-                source: "wmsTileService",
-                prefix: "RASTER_msk_",
-                url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
-                headers:
-                {
-                    'Accept':'image/png',
-                    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
-                },
-                serversPrefix:['','a.','b.','c.'],
-                nextScaleDelay:100,
-                nextTileDelay:10,
-                fCreateUrl:function(tile)
-                {
-                   let tix = Math.floor(Math.random() * this.serversPrefix.length);
-                   let _url=this.url;
-                    _url=_url.replaceAll('{s.}',this.serversPrefix[tix])
-                    _url=_url.replaceAll("{z}",tile.z)
-                    _url=_url.replaceAll("{y}",tile.y)
-                    _url=_url.replaceAll("{x}",tile.x)
-                    return _url;
-                },
-                fConverter:TileModule.lonLat2Tile3857,
-                options:
-                {
-                        constructorOptions:
-                        {
-                                srs: "EPSG%3A4326",
-                                format: "image/png",
-                                transparent: true,
-                                isTiff: false,
-                                layers: "msk"
-                        }
-                },
-                zoom:[13,16],
-        },
-    }
-    // ,{
+    // {
     //     container:"mbtiles",
-    //     areaName:"KirLesBackGround",
-    //     date:"2023.05.7",
+    //     areaName:"Moscow",
+    //     date:"2023.05.4",
     //     //Произвольный полигон для тетстирования, где-то в Москве
-    //     polygon:[[82,50],[103,71]],
-    //     files:
+    //     polygon:[[37.3,55.3],[38,56]],
+    //     files:[
     //         {
-    //             name: "Тест КиреЛес",
-    //             sysName: "kirles",
+    //             name: "Тест Москва",
+    //             sysName: "moscowOS",
     //             source: "wmsTileService",
-    //             prefix: "RASTER_kirles_bg_",
+    //             prefix: "RASTER_msk_",
     //             url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
     //             headers:
     //                 {
@@ -96,18 +51,9 @@ var tasks=
     //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
     //                 },
     //             serversPrefix:['','a.','b.','c.'],
-    //             nextScaleDelay:1000,
-    //             nextTileDelay:100,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                 let tix = Math.floor(Math.random() * this.serversPrefix.length);
-    //                 let _url=this.url;
-    //                 _url=_url.replaceAll('{s.}',this.serversPrefix[tix])
-    //                 _url=_url.replaceAll("{z}",tile.z)
-    //                 _url=_url.replaceAll("{y}",tile.y)
-    //                 _url=_url.replaceAll("{x}",tile.x)
-    //                 return _url;
-    //             },
+    //             nextScaleDelay:100,
+    //             nextTileDelay:10,
+    //             fCreateUrl:TileModule.createUrlSZYX,
     //             fConverter:TileModule.lonLat2Tile3857,
     //             options:
     //                 {
@@ -117,25 +63,94 @@ var tasks=
     //                             format: "image/png",
     //                             transparent: true,
     //                             isTiff: false,
-    //                             layers: "kirles"
+    //                             layers: "msk"
     //                         }
     //                 },
-    //             zoom:[6,7],
-    //         },
-    // },
+    //             zoom:[6,8],
+    //         }
+    //         ,{
+    //             name: "Тест РоссРеестр",
+    //             sysName: "rosreestr",
+    //             source: "wmsTileService",
+    //             prefix: "RASTER_RosReestr_bg_",
+    //             url: "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}",
+    //             headers:
+    //                 {
+    //                     'Accept':'image/jpeg',
+    //                     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    //                 },
+    //             nextScaleDelay:600,
+    //             nextTileDelay:500,
+    //             fCreateUrl:TileModule.createUrlSZYX,
+    //             fConverter:TileModule.lonLat2Tile3857,
+    //             options:
+    //                 {
+    //                     constructorOptions:
+    //                         {
+    //                             srs: "EPSG%3A4326",
+    //                             format: "image/jpeg",
+    //                             transparent: true,
+    //                             isTiff: false,
+    //                             layers: "rosreestr"
+    //                         }
+    //                 },
+    //             // reqCount:5,
+    //             zoom:[9,12],
+    //         }
+    //         ],
+    // }
+    // ,
+    {
+        container:"mbtiles",
+        areaName:"KirLesBackGround",
+        date:"2023.05.7",
+        polygon:[[82,50],[103,71]],
+        attemptCounter:10,
+        files:[
+            {
+                name: "Тест КиреЛес",
+                sysName: "kirles",
+                source: "wmsTileService",
+                prefix: "RASTER_kirles_bg_",
+                url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
+                headers:
+                    {
+                        'Accept':'image/png',
+                        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+                    },
+                serversPrefix:['','a.','b.','c.'],
+                nextScaleDelay:1000,
+                nextTileDelay:100,
+                fCreateUrl:TileModule.createUrlSZYX,
+                fConverter:TileModule.lonLat2Tile3857,
+                options:
+                    {
+                        constructorOptions:
+                            {
+                                srs: "EPSG%3A4326",
+                                format: "image/png",
+                                transparent: true,
+                                isTiff: false,
+                                layers: "kirlesOS"
+                            }
+                    },
+                zoom:[6,7],
+            }],
+    },
     // {
     //     container:"mbtiles",
     //     areaName:"RosReestrBackGround",
     //     date:"2023.05.7",
-    //     //Произвольный полигон для тетстирования, где-то в Москве
     //     polygon:[[82,50],[103,71]],
-    //     files:
+    //     files:[
     //         {
     //             name: "Тест РоссРеестр",
     //             sysName: "rosreestr",
     //             source: "wmsTileService",
     //             prefix: "RASTER_RosReestr_bg_",
-    //             url: "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/",
+    //             url: "https://pkk.rosreestr.ru/arcgis/rest/services/BaseMaps/BaseMap/MapServer/tile/{z}/{y}/{x}",
     //             headers:
     //                 {
     //                     'Accept':'image/jpeg',
@@ -144,14 +159,7 @@ var tasks=
     //                 },
     //             nextScaleDelay:1000,
     //             nextTileDelay:100,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                 let _url=this.url;
-    //                 _url=_url+tile.z;
-    //                 _url=_url+'/'+tile.y;
-    //                 _url=_url+'/'+tile.x;
-    //                 return _url;
-    //             },
+    //             fCreateUrl:TileModule.createUrlSZYX,
     //             fConverter:TileModule.lonLat2Tile3857,
     //             options:
     //                 {
@@ -165,15 +173,14 @@ var tasks=
     //                         }
     //                 },
     //             zoom:[6,7],
-    //         },
+    //         }],
     // },
     // {
     //     container:"mbtiles",
     //     areaName:"GoogleBackGround",
     //     date:"2023.05.7",
-    //     //Произвольный полигон для тетстирования, где-то в Москве
     //     polygon:[[82,50],[103,71]],
-    //     files:
+    //     files:[
     //         {
     //             name: "Тест Google",
     //             sysName: "Google",
@@ -188,14 +195,7 @@ var tasks=
     //                 },
     //             nextScaleDelay:1000,
     //             nextTileDelay:250,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                let _url=this.url;
-    //                 _url=_url.replaceAll("{z}",tile.z)
-    //                 _url=_url.replaceAll("{y}",tile.y)
-    //                 _url=_url.replaceAll("{x}",tile.x)
-    //                 return _url;
-    //             },
+    //             fCreateUrl:TileModule.createUrlSZYX,
     //             fConverter:TileModule.lonLat2Tile3857,
     //             options:
     //                 {
@@ -205,11 +205,11 @@ var tasks=
     //                             format: "image/jpeg",
     //                             transparent: true,
     //                             isTiff: false,
-    //                             layers: "ArcGIS"
+    //                             layers: "Google"
     //                         }
     //                 },
     //             zoom:[6,7],
-    //         },
+    //         }],
     // },
     //
     // {
@@ -218,13 +218,13 @@ var tasks=
     //     date:"2023.05.7",
     //     //Произвольный полигон для тетстирования, где-то в Москве
     //     polygon:[[82,50],[103,71]],
-    //     files:
+    //     files:[
     //         {
     //             name: "Тест ArcGIS",
     //             sysName: "ArcGIS",
     //             source: "wmsTileService",
     //             prefix: "RASTER_ArcGIS_bg_",
-    //             url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/",
+    //             url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
     //             headers:
     //                 {
     //                     'Accept':'image/jpeg',
@@ -233,14 +233,7 @@ var tasks=
     //                 },
     //             nextScaleDelay:1000,
     //             nextTileDelay:500,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                 let _url=this.url;
-    //                 _url=_url+tile.z;
-    //                 _url=_url+'/'+tile.y;
-    //                 _url=_url+'/'+tile.x;
-    //                 return _url;
-    //             },
+    //             fCreateUrl:TileModule.createUrlSZYX,
     //             fConverter:TileModule.lonLat2Tile3857,
     //             options:
     //                 {
@@ -254,16 +247,16 @@ var tasks=
     //                         }
     //                 },
     //             zoom:[6,7],
-    //         },
+    //         }],
     // }
     // ,
-    // ,{
+    // {
     //     container:"mbtiles",
-    //     areaName:"Кирлес",
+    //     areaName:"KirLes",
     //     date:"2023.05.7",
     //     //Произвольный полигон для тетстирования кирлеса
     //     polygon:[[82,50],[103,71]],
-    //     files:
+    //     files:[
     //         {
     //             name: "Тест Кирлес",
     //             sysName: "moscow",
@@ -282,31 +275,8 @@ var tasks=
     //             },
     //
     //             nextScaleDelay:1000,
-    //             nextTileDelay:100,
-    //             fCreateUrl:function(tile)
-    //             {
-    //                 let _url=this.url;
-    //
-    //                 let totTile=1<<tile.z;
-    //                 let bbox= [
-    //                     [tile.x/totTile, tile.y/totTile],
-    //                     [(tile.x+1)/totTile,
-    //                         (tile.y+1)/totTile]]
-    //
-    //                 let wMul= 2*Math.PI * TileModule.sradiusa;
-    //                 // let hmul= 2*Math.PI * TileModule.sradiusb;
-    //                 for (let pt of bbox)
-    //                 {
-    //                     pt[0]=(pt[0] - 0.5) * wMul;
-    //                     pt[1]= (0.5 - pt[1]) * wMul;
-    //                 }
-    //                 _url=_url.replaceAll(
-    //                     "{bbox}",
-    //                     ""+Math.min(bbox[0][0],bbox[1][0])+","+Math.min(bbox[0][1],bbox[1][1])+","+
-    //                     Math.max(bbox[0][0],bbox[1][0])+","+Math.max(bbox[0][1],bbox[1][1])
-    //                 )
-    //                 return _url;
-    //             },
+    //             nextTileDelay:300,
+    //             fCreateUrl:TileModule.createUrlBBox,
     //             fConverter:TileModule.lonLat2Tile3857,
     //             options:
     //                 {
@@ -320,7 +290,7 @@ var tasks=
     //                         }
     //                 },
     //             zoom:[6,7],
-    //         },
+    //         }],
     // }
 ]
 
@@ -329,14 +299,60 @@ tasks.forEach
     (desc)=>
     {
         desc.date=TileModule.dateString();
-        TileModule.saveDescriptor2File(desc);
-        desc.tileLoader = new TileModule.TileLoader(desc);
-        desc.tileLoader.startLoading(
-            function ()
+
+        for (let ix=0;ix<desc.files.length;ix++)
+            TileModule.saveDescriptor2File(desc,ix);
+
+        desc.tileLoader = new TileModule.TileLoader(desc,2); //Use Debug mode for debugging without requests
+
+
+        const callBackAfterLoad=function (timeout)
+        {
+            let _errCount=0;
+            let errMap=this.errMap;
+            for (let jx=0;jx<desc.files.length;jx++)
             {
-                console.log("Errors count:"+ this.errMap.totErrs);
-                this.saveErrMap2File();
+                this.saveErrMap2File(jx);
+                _errCount+=errMap[jx].totErrs;
             }
+            console.log("Errors count:"+ _errCount+" timeout: "+ ((timeout===undefined)?"none":timeout));
+
+            if(desc.attemptCounter === undefined)
+                desc.attemptCounter=1;
+
+            if (_errCount>0)
+            {
+                if (desc.attemptCounter>0)
+                {
+                    desc.attemptCounter--;
+                    setTimeout
+                    (
+                        ()=>
+                        {
+                            desc.tileLoader.startLoading(callBackAfterLoad,errMap)
+                        },
+                        TileModule.defPauseBeforeNextAttempt
+                    )
+                }
+                else
+                    console.log("Mbtile file for "+desc.areaName+" was not generated, download tiles error:"+_errCount);
+            }
+            else
+                TileWriter.createMBTile(desc);
+        }
+
+        desc.tileLoader.startLoading
+        (
+            callBackAfterLoad
         );
     }
 )
+
+// build mbtiles without downloads
+// tasks.forEach
+// (
+//     (desc)=>
+//     {
+//         TileWriter.createMBTile(desc);
+//     }
+// )
