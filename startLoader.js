@@ -101,44 +101,45 @@ var tasks=
     //         ],
     // }
     // ,
-    {
-        container:"mbtiles",
-        areaName:"KirLesBackGround",
-        date:"2023.05.7",
-        polygon:[[82,50],[103,71]],
-        attemptCounter:10,
-        files:[
-            {
-                name: "Тест КиреЛес",
-                sysName: "kirles",
-                source: "wmsTileService",
-                prefix: "RASTER_kirles_bg_",
-                url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
-                headers:
-                    {
-                        'Accept':'image/png',
-                        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
-                    },
-                serversPrefix:['','a.','b.','c.'],
-                nextScaleDelay:1000,
-                nextTileDelay:100,
-                fCreateUrl:TileModule.createUrlSZYX,
-                fConverter:TileModule.lonLat2Tile3857,
-                options:
-                    {
-                        constructorOptions:
-                            {
-                                srs: "EPSG%3A4326",
-                                format: "image/png",
-                                transparent: true,
-                                isTiff: false,
-                                layers: "kirlesOS"
-                            }
-                    },
-                zoom:[6,7],
-            }],
-    },
+    // {
+    //     container:"mbtiles",
+    //     areaName:"KirLesBackGround",
+    //     date:"2023.05.7",
+    //     polygon:[[82,50],[103,71]],
+    //     attemptCounter:10,
+    //     files:[
+    //         {
+    //             name: "Тест КиреЛес",
+    //             sysName: "kirles",
+    //             source: "wmsTileService",
+    //             prefix: "RASTER_kirles_bg_",
+    //             url: "https://{s.}tile.openstreetmap.org/{z}/{x}/{y}.png",
+    //             headers:
+    //                 {
+    //                     'Accept':'image/png',
+    //                     'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
+    //                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0'
+    //                 },
+    //             serversPrefix:['','a.','b.','c.'],
+    //             nextScaleDelay:1000,
+    //             nextTileDelay:100,
+    //             fCreateUrl:TileModule.createUrlSZYX,
+    //             fConverter:TileModule.lonLat2Tile3857,
+    //             options:
+    //                 {
+    //                     constructorOptions:
+    //                         {
+    //                             srs: "EPSG%3A4326",
+    //                             format: "image/png",
+    //                             transparent: true,
+    //                             isTiff: false,
+    //                             layers: "kirlesOS"
+    //                         }
+    //                 },
+    //             zoom:[6,7],
+    //         }],
+    // }
+    // ,
     // {
     //     container:"mbtiles",
     //     areaName:"RosReestrBackGround",
@@ -210,13 +211,14 @@ var tasks=
     //                 },
     //             zoom:[6,7],
     //         }],
-    // },
+    // }
+    // ,
     //
     // {
     //     container:"mbtiles",
     //     areaName:"ArcGISBackGround",
     //     date:"2023.05.7",
-    //     //Произвольный полигон для тетстирования, где-то в Москве
+    //     //Произвольный полигон для тетстирования, КирЛес
     //     polygon:[[82,50],[103,71]],
     //     files:[
     //         {
@@ -250,48 +252,48 @@ var tasks=
     //         }],
     // }
     // ,
-    // {
-    //     container:"mbtiles",
-    //     areaName:"KirLes",
-    //     date:"2023.05.7",
-    //     //Произвольный полигон для тетстирования кирлеса
-    //     polygon:[[82,50],[103,71]],
-    //     files:[
-    //         {
-    //             name: "Тест Кирлес",
-    //             sysName: "moscow",
-    //             source: "wmsTileService",
-    //             prefix: "RASTER_kirles_",
-    //             url:"https://kyrles.akadem.ru/gisServer/geoserver/wms?LAYERS=citorus:ForMen&service=WMS&request=GetMap&layers=citorus%3AForMen&styles=&format=image%2Fpng&transparent=true&version=1.1.1&srs=EPSG%3A3857&test=0.18172415236394368&width=256&height=256&bbox={bbox}",
-    //             headers:
-    //             {
-    //                 "Referer":"https://kyrles.akadem.ru/lesfondgeo/",
-    //                 "Connection": "keep-alive",
-    //                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36",
-    //                 // "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-    //                 'Accept':'image/png',
-    //                 // "Accept-Encoding": "gzip, deflate, br",
-    //                 "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,be;q=0.6,pl;q=0.5",
-    //             },
-    //
-    //             nextScaleDelay:1000,
-    //             nextTileDelay:300,
-    //             fCreateUrl:TileModule.createUrlBBox,
-    //             fConverter:TileModule.lonLat2Tile3857,
-    //             options:
-    //                 {
-    //                     constructorOptions:
-    //                         {
-    //                             srs: "EPSG%3A4326",
-    //                             format: "image/png",
-    //                             transparent: true,
-    //                             isTiff: false,
-    //                             layers: "Kirles"
-    //                         }
-    //                 },
-    //             zoom:[6,7],
-    //         }],
-    // }
+    {
+        container:"mbtiles",
+        areaName:"KirLes",
+        date:"2023.05.7",
+        //Произвольный полигон для тетстирования кирлеса
+        polygon:[[82,50],[103,71]],
+        files:[
+            {
+                name: "Тест Кирлес",
+                sysName: "KirLes",
+                source: "wmsTileService",
+                prefix: "RASTER_kirles_",
+                url:"https://kyrles.akadem.ru/gisServer/geoserver/wms?LAYERS=citorus:ForMen&service=WMS&request=GetMap&layers=citorus%3AForMen&styles=&format=image%2Fpng&transparent=true&version=1.1.1&srs=EPSG%3A3857&test=0.18172415236394368&width=256&height=256&bbox={bbox}",
+                headers:
+                {
+                    "Referer":"https://kyrles.akadem.ru/lesfondgeo/",
+                    "Connection": "keep-alive",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36",
+                    // "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+                    'Accept':'image/png',
+                    // "Accept-Encoding": "gzip, deflate, br",
+                    "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,be;q=0.6,pl;q=0.5",
+                },
+
+                nextScaleDelay:1000,
+                nextTileDelay:300,
+                fCreateUrl:TileModule.createUrlBBox,
+                fConverter:TileModule.lonLat2Tile3857,
+                options:
+                    {
+                        constructorOptions:
+                            {
+                                srs: "EPSG%3A4326",
+                                format: "image/png",
+                                transparent: true,
+                                isTiff: false,
+                                layers: "Kirles"
+                            }
+                    },
+                zoom:[6,7],
+            }],
+    }
 ]
 
 tasks.forEach
@@ -303,7 +305,7 @@ tasks.forEach
         for (let ix=0;ix<desc.files.length;ix++)
             TileModule.saveDescriptor2File(desc,ix);
 
-        desc.tileLoader = new TileModule.TileLoader(desc,2); //Use Debug mode for debugging without requests
+        desc.tileLoader = new TileModule.TileLoader(desc); //Use Debug mode===2 for debugging error handler without requests to server
 
 
         const callBackAfterLoad=function (timeout)
