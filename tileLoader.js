@@ -139,7 +139,14 @@ const saveDescriptor2File=function(desc,currentFIx)
     if (_tileLoader!==undefined)
         desc.tileLoader=_tileLoader;
 }
-
+/**
+ *
+ * @param desc - Loader descriptor ( see in startLoader.js example )
+ * @param mode - mode ( mode===undefined or 0 = work by descriptor
+ *                      mode=== 1 debug don't request to server write down order number in tile files
+ *                      mode===2 debug don't request to server error loading emulation do not write tile files)
+ * @constructor
+ */
 const TileLoader=function
 (
         desc,
@@ -448,10 +455,10 @@ const TileLoader=function
                     if (res.statusCode !== 200)
                     {
                         // console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
+                        res.resume();
                         this.endReq++;
                         this.push2ErrMap(tile, res.statusCode,currentFIx);
-                        res.resume();
-                        // this.loadNextTile(tile,arrTiles,currentFIx);//TODO switch on after debugging
+                        this.loadNextTile(tile,arrTiles,currentFIx);
                         return;
                     }
 
@@ -460,7 +467,7 @@ const TileLoader=function
                         {
                             this.endReq++;
                             this.push2ErrMap(tile, err,currentFIx);
-                            // this.loadNextTile(tile,arrTiles,currentFIx);//TODO switch on after debugging
+                            this.loadNextTile(tile,arrTiles,currentFIx);
                         }
                     )
                     res.on('data', (chunk) => {
