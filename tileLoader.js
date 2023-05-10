@@ -436,7 +436,7 @@ const TileLoader=function
                     if (this.mode===2)
                     {
                         let tix = Math.floor(Math.random() * 100);
-                        if (tix>=65) //Error modeling 65%
+                        if (tix>=65) //Error modeling 35% - error probability
                             this.push2ErrMap(tile, "Test_Error",currentFIx);
                         this.loadNextTile(tile,arrTiles,currentFIx);
                     }
