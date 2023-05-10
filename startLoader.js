@@ -329,6 +329,7 @@ tasks.forEach
                     (
                         ()=>
                         {
+                            desc.tileLoader.resetLoader();
                             desc.tileLoader.startLoading(callBackAfterLoad,errMap)
                         },
                         TileModule.defPauseBeforeNextAttempt

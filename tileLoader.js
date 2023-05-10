@@ -173,20 +173,23 @@ const TileLoader=function
         }
     )
 
-    this.currentZoom=[];
-    this.errMap=[];
-    this.ext=[];
-    for (let ix=0;ix<this.desc.files.length;ix++)
+    this.resetLoader=function ()
     {
-        this.currentZoom[this.currentZoom.length]=-1;
-        this.errMap[this.errMap.length] = {totErrs:0};
-        this.ext[this.ext.length]='png';
-        const inFormat=this.desc.files[ix].options.constructorOptions.format;
-        if (inFormat)
+        this.currentZoom=[];
+        this.errMap=[];
+        this.ext=[];
+        for (let ix=0;ix<this.desc.files.length;ix++)
         {
-            const aExt=inFormat.match(findFormat)
-            if (aExt && aExt.length>1)
-                this.ext[this.ext.length-1]=aExt[1];
+            this.currentZoom[this.currentZoom.length]=-1;
+            this.errMap[this.errMap.length] = {totErrs:0};
+            this.ext[this.ext.length]='png';
+            const inFormat=this.desc.files[ix].options.constructorOptions.format;
+            if (inFormat)
+            {
+                const aExt=inFormat.match(findFormat)
+                if (aExt && aExt.length>1)
+                    this.ext[this.ext.length-1]=aExt[1];
+            }
         }
     }
 
@@ -391,7 +394,6 @@ const TileLoader=function
         }
     }
 
-
     this.loadOneTile =  function (tile,arrTiles,currentFIx)
     {
         const _url=this.desc.files[currentFIx].fCreateUrl(tile);
@@ -427,7 +429,7 @@ const TileLoader=function
                     if (this.mode===2)
                     {
                         let tix = Math.floor(Math.random() * 100);
-                        if (tix>=65)
+                        if (tix>=65) //Error modeling 65%
                             this.push2ErrMap(tile, "Test_Error",currentFIx);
                         this.loadNextTile(tile,arrTiles,currentFIx);
                     }
@@ -481,6 +483,8 @@ const TileLoader=function
                 throw ex;
             }
     }
+
+    this.resetLoader();
 }
 
 module.exports={
