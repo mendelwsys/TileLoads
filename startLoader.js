@@ -280,7 +280,7 @@ var tasks=
                 nextScaleDelay:1000,  //Пауза перед началом обработки следующего масштаба по умолчанию TileModule.defNextScaleDelay
                 nextTileDelay:300, //Пауза перед запросом следующего тайла по умолчанию  TileModule.defNextTileDelay
                 attemptCounter:10, //Кол-во попыток скачать ошибочные тайлы ( по умолчанию 1) пауза перед следующей попыткой TileModule.defPauseBeforeNextAttempt
-                reqCount:5, //Кол-во  одновременных запросов к серверу
+                reqCount:5, //Кол-во  одновременных запросов к серверу по умолчанию 4
                 fCreateUrl:TileModule.createUrlBBox, //Функция формирования урла запроса тайла у сервера
                 fConverter:TileModule.lonLat2Tile3857, //Функция преобразования координат из долготы широты в тайл
 
