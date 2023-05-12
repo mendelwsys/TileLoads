@@ -3,17 +3,17 @@ const http = require('http');
 const fs = require('fs');
 const Stream = require('stream').Transform;
 
-const sradiusa=6378137
-const sradiusb=6356752
+const sradiusa=6378137 ;//Радиус земли по экв.
+const sradiusb=6356752 ;//Радиус земли по мерид.
 let fEncoding = 'utf-8';
 
-const defNextScaleDelay=100;
-const defNextTileDelay=10;
-const testTimeOut = 100;
+const defNextScaleDelay=100; //Пауза перед следующим запросом масштаба по умолчанию
+const defNextTileDelay=10; //Пауза перед следующим запросо тайла по умолчанию
+const testTimeOut = 100; //Применяется для тестирования.
 const findFormat=/image\/(\w+)/;
-let waitDownLoadTimeOut = 10000;
-let checkTimeout=500;
-let defPauseBeforeNextAttempt=1000;
+let waitDownLoadTimeOut = 10000; //Ожидание того что все сделанные на сервер запросы будут завершены
+let checkTimeout=500; //пауза перед проверкой того что все сделанные запросы завершены
+let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой
 
 const dateString=function ()
 {

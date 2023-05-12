@@ -265,7 +265,7 @@ var tasks=
                 source: "wmsTileService",
                 prefix: "RASTER_kirles_",
                 url:"https://kyrles.akadem.ru/gisServer/geoserver/wms?LAYERS=citorus:ForMen&service=WMS&request=GetMap&layers=citorus%3AForMen&styles=&format=image%2Fpng&transparent=true&version=1.1.1&srs=EPSG%3A3857&test=0.18172415236394368&width=256&height=256&bbox={bbox}",
-                headers:
+                headers: //Заголово для формирования запроса к серверу.
                 {
                     "Referer":"https://kyrles.akadem.ru/lesfondgeo/",
                     "Connection": "keep-alive",
@@ -276,10 +276,14 @@ var tasks=
                     "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7,be;q=0.6,pl;q=0.5",
                 },
 
-                nextScaleDelay:1000,
-                nextTileDelay:300,
-                fCreateUrl:TileModule.createUrlBBox,
-                fConverter:TileModule.lonLat2Tile3857,
+
+                nextScaleDelay:1000,  //Пауза перед началом обработки следующего масштаба по умолчнию TileModule.defNextScaleDelay
+                nextTileDelay:300, //Пауза перед запросом следующейго тайла по умолчанию TileModule.defNextTileDelay
+                //  attemptCounter:10, //Кол-во попыток скачать ошибочные тайлы ( по умолчанию 1) пауза перд следующей попыткой TileModule.defPauseBeforeNextAttempt
+                // reqCount:5, //Кол-во  одновременны запросов к серверу.
+                fCreateUrl:TileModule.createUrlBBox, //Функция формирования урла запроса тайла у сервера
+                fConverter:TileModule.lonLat2Tile3857, //Функция преобразования координат из долготы широты в тайл
+
                 options:
                     {
                         constructorOptions:
