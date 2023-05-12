@@ -277,10 +277,10 @@ var tasks=
                 },
 
 
-                nextScaleDelay:1000,  //Пауза перед началом обработки следующего масштаба по умолчнию TileModule.defNextScaleDelay
-                nextTileDelay:300, //Пауза перед запросом следующейго тайла по умолчанию TileModule.defNextTileDelay
-                attemptCounter:10, //Кол-во попыток скачать ошибочные тайлы ( по умолчанию 1) пауза перд следующей попыткой TileModule.defPauseBeforeNextAttempt
-                reqCount:5, //Кол-во  одновременных запросов к серверу.
+                nextScaleDelay:1000,  //Пауза перед началом обработки следующего масштаба по умолчанию TileModule.defNextScaleDelay
+                nextTileDelay:300, //Пауза перед запросом следующего тайла по умолчанию  TileModule.defNextTileDelay
+                attemptCounter:10, //Кол-во попыток скачать ошибочные тайлы ( по умолчанию 1) пауза перед следующей попыткой TileModule.defPauseBeforeNextAttempt
+                reqCount:5, //Кол-во  одновременных запросов к серверу
                 fCreateUrl:TileModule.createUrlBBox, //Функция формирования урла запроса тайла у сервера
                 fConverter:TileModule.lonLat2Tile3857, //Функция преобразования координат из долготы широты в тайл
 

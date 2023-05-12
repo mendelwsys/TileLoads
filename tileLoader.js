@@ -11,9 +11,9 @@ const defNextScaleDelay=100; //Пауза перед следующим запр
 const defNextTileDelay=10; //Пауза перед следующим запросо тайла по умолчанию
 const testTimeOut = 100; //Применяется для тестирования.
 const findFormat=/image\/(\w+)/;
-let waitDownLoadTimeOut = 10000; //Ожидание того что все сделанные на сервер запросы будут завершены
-let checkTimeout=500; //пауза перед проверкой того что все сделанные запросы завершены
-let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой
+let waitDownLoadTimeOut = 10000; //Ожидание того, что все сделанные на сервер запросы будут завершены
+let checkTimeout=500; //пауза перед проверкой, того что все сделанные запросы завершены
+let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой получения ошибочных тайлов
 
 const dateString=function ()
 {
