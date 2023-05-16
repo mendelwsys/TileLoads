@@ -367,7 +367,7 @@ const TileLoader=function
         fs.writeFileSync(path+this.desc.files[currentFIx].prefix+tile.z+'_'+tile.y+'_'+tile.x+'.'+this.ext[currentFIx],data.read());
         this.loadNextTile(tile,arrTiles,currentFIx);
 
-        // if (arrTiles.length===0)
+        // if (arrTiles.length===0) //
         // {
         //     setTimeout(() =>
         //     {

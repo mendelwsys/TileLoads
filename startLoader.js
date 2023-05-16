@@ -310,7 +310,7 @@ var tasks=
                 sysName: "Google",
                 source: "wmsTileService",
                 prefix: "RASTER_Google_",
-                //url: "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru",
+                //url: "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru", //
                 url: "http://mt{s.}google.com/vt/lyrs=y@176103410&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru",
                 headers: {
                     "Referer": "https://www.google.com/maps/"

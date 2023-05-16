@@ -1,5 +1,5 @@
 // import assert from 'node:assert/strict';
-// var assert = require('assert');
+// var assert = require('assert'); //
 require('sqlite3').verbose();
 
 const tape = require('tape');
