@@ -6,9 +6,17 @@ const tape = require('tape');
 const fs = require('fs');
 const MBTiles = require('@mapbox/mbtiles');
 
-const completed = { written: 0, read: 0, tls:{},bbx:{} };
-const findFormat=/image\/(\w+)/;
+const completed =
+    {
+        written: 0, read: 0, tls:{},bbx:{},ixfT:[],
+        startFiles:0,
+        _4wrTotal:0,
+        _passed:0
+    };
 
+const findFormat=/image\/(\w+)/;
+const defLogMbCounter = 3000;//Выводить в лог состояние построения mbtile.
+const defWriterCount = 100; //Кол-во потоков записи на дискю
 
 const createMBTile=function(desc) {
 
@@ -42,6 +50,10 @@ const createMBTile=function(desc) {
     {
         completed.open = true;
         completed.startFiles = 0;
+        completed._4wrTotal=0;
+        completed._passed=0;
+        completed.ixfT=[];
+
         if (err) throw err;
 
 
@@ -76,7 +88,8 @@ const createMBTile=function(desc) {
             {
                 const bbx=completed.bbx;
 
-                if (completed.written === completed.startFiles)
+                //if (completed.written === completed.startFiles)
+                if (completed._passed === completed._4wrTotal)// || completed.ixf>=206540)
                 {
                     const exampleInfo =
                     {
@@ -117,16 +130,46 @@ const createMBTile=function(desc) {
             setTimeout(isEndP, 10)
         });
 
+
+        function nextFile(pathPrefix,folder,fileO,fTiles)
+        {
+            while (completed.ixfT[folder]<fTiles.length && (completed.written + defWriterCount > completed.startFiles))// && completed.ixf<206540)
+            {
+
+                let file=fTiles[completed.ixfT[folder]];
+                completed.ixfT[folder]++;
+                insertTile(pathPrefix + folder, file,fileO)
+            }
+
+            if (completed.ixfT[folder]<fTiles.length)// && completed.ixf<206540)
+            {
+                setTimeout(
+                    function ()
+                    {
+                        nextFile(pathPrefix,folder,fileO,fTiles);
+                    },5)
+            }
+        }
+
+
         function insertFolder(pathPrefix,folder,fileO)
         {
             let stat = fs.lstatSync(pathPrefix + folder);
+
+            completed.ixfT[folder]=0;
             if (stat.isDirectory())
-                fs.readdirSync(pathPrefix + folder).forEach
-                (
-                    (file) => {
-                        insertTile(pathPrefix + folder, file,fileO)
-                    }
-                );
+            {
+                let fTiles=fs.readdirSync(pathPrefix + folder);
+                completed._4wrTotal+=fTiles.length;
+                nextFile(pathPrefix,folder,fileO,fTiles)
+            }
+                // forEach
+                // (
+                //     (file) =>
+                //     {
+                //         insertTile(pathPrefix + folder, file,fileO)
+                //     }
+                // );
         }
 
         function insertTile(pathPrefix, file,fileO)
@@ -134,9 +177,12 @@ const createMBTile=function(desc) {
             let regExpStr = "^" + fileO.prefix + "(\\d+)_(\\d+)_(\\d+)\\."+fileO.ext+"$";
             const regExp = new RegExp(regExpStr);
             const coords = file.match(regExp);
-
             if (!coords)
+            {
+                completed._passed++;
                 return;
+            }
+
 
             let tile = fs.readFileSync(pathPrefix + '/' + file);
             completed.startFiles++;
@@ -155,6 +201,11 @@ const createMBTile=function(desc) {
                 {
                     if (err) throw err;
                     completed.written++;
+                    completed._passed++;
+                    if (completed.written%defLogMbCounter===0)
+                    {
+                        console.log("Scale:"+(coords[1] | 0)+" Total tiles in mbtile file: "+ completed.written+" of: "+completed._4wrTotal);
+                    }
                 });
         }
     });

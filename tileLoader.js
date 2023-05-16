@@ -14,7 +14,7 @@ const findFormat=/image\/(\w+)/;
 let waitDownLoadTimeOut = 10000; //Ожидание того, что все сделанные на сервер запросы будут завершены
 let checkTimeout=500; //пауза перед проверкой, того что все сделанные запросы завершены
 let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой получения ошибочных тайлов
-
+let defLogCounter = 1000;//Выводить в лог состояние скачивания после каждого defLogCounter запроса.
 const dateString=function ()
 {
     let date_ob = new Date();
@@ -163,6 +163,8 @@ const TileLoader=function
     this.totalReq=0;
     this.endReq=0;
     this.waitCont=0;
+
+    this.totTileLoader=0;
 
     let bbx = {};
     this.desc.polygon.forEach(
@@ -382,22 +384,29 @@ const TileLoader=function
         // }
     }
 
-    this.loadNextTile=function (tile,arrTiles,currentFIx)
+    this.loadNextTile=function (tile,arrTiles,currentFIx,delay)
     {
+
         if (arrTiles.length===0)
         {
+            if (delay ===undefined)
+                delay= this.desc.files[currentFIx].nextScaleDelay;
+
             setTimeout(() =>
             {
                 this.startLoadTz(tile.z+1,currentFIx);
-            }, this.desc.files[currentFIx].nextScaleDelay);
+            }, delay);
         }
         else
         {
+            if (delay ===undefined)
+                delay= this.desc.files[currentFIx].nextTileDelay;
+
             const _tile = this.getNextTile(arrTiles);
             setTimeout(()=>
             {
                 this.loadOneTile(_tile,arrTiles,currentFIx);
-            }, this.desc.files[currentFIx].nextTileDelay);
+            }, delay);
         }
     }
 
@@ -418,7 +427,14 @@ const TileLoader=function
         }
 
         const requester=isHttps?https:http;
+        if (this.totTileLoader%defLogCounter===0)
+        {
+            console.log("Scale:"+tile.z+" Remains:"+arrTiles.length+" Index in files array:"+currentFIx);
+            console.log("Errors:"+(this.errMap[currentFIx].totErrs)+" Requests:"+(this.totalReq)+" Complete:"+(this.endReq));
+            console.log("=")
+        }
 
+        this.totTileLoader++;
         if (this.mode)
         {
             if (this.checkCount === undefined)
@@ -448,39 +464,55 @@ const TileLoader=function
         else
             try
             {
-                this.totalReq++;
-                requester.get(url.href,options, (res) =>
-                {
-
-                    if (res.statusCode !== 200)
+                    const pathTiles = __dirname + '/'+this.desc.files[currentFIx].prefix+'/'+tile.z+'/';
+                    const fullTileFile=pathTiles+this.desc.files[currentFIx].prefix+tile.z+'_'+tile.y+'_'+tile.x+'.'+this.ext[currentFIx];
+                    if (fs.existsSync(fullTileFile))
                     {
-                        // console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
-                        res.resume();
-                        this.endReq++;
-                        this.push2ErrMap(tile, res.statusCode,currentFIx);
-                        this.loadNextTile(tile,arrTiles,currentFIx);
-                        return;
+                        this.loadNextTile(tile,arrTiles,currentFIx,0);
                     }
+                    else
+                    {
+                        this.totalReq++;
+                        let out=requester.get(url.href,options, (res) =>
+                        {
 
-                    let data = new Stream();
-                    res.on('error',(err)=>
+                            if (res.statusCode !== 200)
+                            {
+                                // console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
+                                res.resume();
+                                this.endReq++;
+                                this.push2ErrMap(tile, res.statusCode,currentFIx);
+                                this.loadNextTile(tile,arrTiles,currentFIx);
+                                return;
+                            }
+
+                            let data = new Stream();
+                            res.on('error',(err)=>
+                                {
+                                    this.endReq++;
+                                    this.push2ErrMap(tile, err,currentFIx);
+                                    this.loadNextTile(tile,arrTiles,currentFIx);
+                                }
+                            )
+                            res.on('data', (chunk) => {
+                                data.push(chunk);
+                            });
+
+                            res.on('close', () =>
+                                {
+                                    this.endReq++;
+                                    this.writeTile(tile,arrTiles,currentFIx,data)
+                                }
+                            );
+                        });
+
+                        out.on('error',(err)=>
                         {
                             this.endReq++;
                             this.push2ErrMap(tile, err,currentFIx);
                             this.loadNextTile(tile,arrTiles,currentFIx);
-                        }
-                    )
-                    res.on('data', (chunk) => {
-                        data.push(chunk);
-                    });
-
-                    res.on('close', () =>
-                        {
-                            this.endReq++;
-                            this.writeTile(tile,arrTiles,currentFIx,data)
-                        }
-                    );
-                });
+                        })
+                    }
             }
             catch(ex)
             {
