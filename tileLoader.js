@@ -11,10 +11,12 @@ const defNextScaleDelay=100; //Пауза перед следующим запр
 const defNextTileDelay=10; //Пауза перед следующим запросо тайла по умолчанию
 const testTimeOut = 100; //Применяется для тестирования.
 const findFormat=/image\/(\w+)/;
-let waitDownLoadTimeOut = 10000; //Ожидание того, что все сделанные на сервер запросы будут завершены
+const defRequestCount = 4; //Кол-во потоков скачивания по умолчанию
+let waitDownLoadTimeOut = 20000; //Ожидание того, что все сделанные на сервер запросы будут завершены
 let checkTimeout=500; //пауза перед проверкой, того что все сделанные запросы завершены
-let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой получения ошибочных тайлов
+let defPauseBeforeNextAttempt=4000; //Пауза перед пследующей попыткой получения ошибочных тайлов
 let defLogCounter = 1000;//Выводить в лог состояние скачивания после каждого defLogCounter запроса.
+
 const dateString=function (isLong)
 {
     let date_ob = new Date();
@@ -853,7 +855,7 @@ const TileLoader=function
 
         let reqCount=this.desc.files[currentFIx].reqCount;
         if (!reqCount)
-            reqCount=4;
+            reqCount= defRequestCount;
 
         //save log about count of tiles for save
         this.saveObject2File("tileCounter_"+("0"+tz).slice(-2),{z:tz,count:arrTiles.length},currentFIx);
@@ -979,25 +981,33 @@ const TileLoader=function
                     else
                     {
                         this.totalReq++;
-                        let out=requester.get(url.href,options, (res) =>
+                        const request=requester.get(url.href,options, (res) =>
                         {
 
                             if (res.statusCode !== 200)
                             {
                                 // console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
                                 res.resume();
-                                this.endReq++;
-                                this.push2ErrMap(tile, res.statusCode,currentFIx);
-                                this.loadNextTile(tile,arrTiles,currentFIx);
+                                if (tile!=null)
+                                {
+                                    this.endReq++;
+                                    this.push2ErrMap(tile, res.statusCode, currentFIx);
+                                    this.loadNextTile(tile, arrTiles, currentFIx);
+                                    tile=null;
+                                }
                                 return;
                             }
 
                             let data = new Stream();
                             res.on('error',(err)=>
                                 {
-                                    this.endReq++;
-                                    this.push2ErrMap(tile, err,currentFIx);
-                                    this.loadNextTile(tile,arrTiles,currentFIx);
+                                    if (tile!=null)
+                                    {
+                                        this.endReq++;
+                                        this.push2ErrMap(tile, err, currentFIx);
+                                        this.loadNextTile(tile, arrTiles, currentFIx);
+                                        tile = null;
+                                    }
                                 }
                             )
                             res.on('data', (chunk) => {
@@ -1006,18 +1016,39 @@ const TileLoader=function
 
                             res.on('close', () =>
                                 {
-                                    this.endReq++;
-                                    this.writeTile(tile,arrTiles,currentFIx,data)
+                                    if (tile!=null)
+                                    {
+                                        this.endReq++;
+                                        this.writeTile(tile, arrTiles, currentFIx, data)
+                                        tile = null;
+                                    }
                                 }
                             );
                         });
 
-                        out.on('error',(err)=>
+                        request.on('error',(err)=>
                         {
-                            this.endReq++;
-                            this.push2ErrMap(tile, err,currentFIx);
-                            this.loadNextTile(tile,arrTiles,currentFIx);
+                            if (tile!=null)
+                            {
+                                this.endReq++;
+                                this.push2ErrMap(tile, err, currentFIx);
+                                this.loadNextTile(tile, arrTiles, currentFIx);
+                                tile=null;
+                            }
                         })
+
+                        request.on('timeout',(err)=>
+                        {
+                            if (tile!=null)
+                            {
+                                this.endReq++;
+                                this.push2ErrMap(tile, err, currentFIx);
+                                this.loadNextTile(tile, arrTiles, currentFIx);
+                                tile=null;
+                            }
+                            request.destroy();
+                        })
+
                     }
             }
             catch(ex)
