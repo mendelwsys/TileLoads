@@ -15,7 +15,7 @@ let waitDownLoadTimeOut = 10000; //Ожидание того, что все сд
 let checkTimeout=500; //пауза перед проверкой, того что все сделанные запросы завершены
 let defPauseBeforeNextAttempt=1000; //Пауза перед пследующей попыткой получения ошибочных тайлов
 let defLogCounter = 1000;//Выводить в лог состояние скачивания после каждого defLogCounter запроса.
-const dateString=function ()
+const dateString=function (isLong)
 {
     let date_ob = new Date();
 // current date
@@ -25,13 +25,20 @@ const dateString=function ()
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
 // current year
     let year = date_ob.getFullYear();
-// // current hours
-//     let hours = date_ob.getHours();
-// // current minutes
-//     let minutes = date_ob.getMinutes();
-// // current seconds
-//     let seconds = date_ob.getSeconds();
-    return year + "." + month + "." + date;
+
+    let HMS='';
+    if (isLong)
+    {
+// current hours
+        let hours = date_ob.getHours();
+// current minutes
+        let minutes = date_ob.getMinutes();
+// current seconds
+        let seconds = date_ob.getSeconds();
+
+        HMS=' '+("0" + hours).slice(-2)+':'+("0" + minutes).slice(-2)+':'+("0" + seconds).slice(-2);
+    }
+    return year + "." + month + "." + date+HMS;
 }
 
 const direction=function (a, b, c)
@@ -439,7 +446,6 @@ const TileLoader=function
     this.totalReq=0;
     this.endReq=0;
     this.waitCont=0;
-
     this.totTileLoader=0;
 
     let bbx = {};
@@ -460,6 +466,11 @@ const TileLoader=function
 
     this.resetLoader=function ()
     {
+        this.totalReq=0;
+        this.endReq=0;
+        this.waitCont=0;
+        this.totTileLoader=0;
+
         this.currentZoom=[];
         this.errMap=[];
         this.ext=[];
@@ -478,6 +489,22 @@ const TileLoader=function
         }
     }
 
+    this.saveObject2File=function(fname,o4write,currentFIx)
+    {
+        let path = __dirname + '/'+this.desc.files[currentFIx].prefix;
+        if (!fs.existsSync(path))
+            fs.mkdirSync(path,{ recursive: true });
+        let attemptCounter=1;
+        if (this.desc.attemptCounter !== undefined)
+            attemptCounter=this.desc.attemptCounter;
+
+        let datetimeStr=dateString(true);
+        datetimeStr=datetimeStr.replaceAll(' ','T');
+        datetimeStr=datetimeStr.replaceAll('.','_');
+        datetimeStr=datetimeStr.replaceAll(':','_');
+        let f4write=fname+'_'+("0"+attemptCounter).slice(-2)+'D'+datetimeStr;
+        fs.writeFileSync(path+'/'+f4write+'.json', JSON.stringify(o4write, null, 2) , fEncoding);
+    }
     this.saveErrMap2File=function (currentFIx)
     {
         let path = __dirname + '/'+this.desc.files[currentFIx].prefix;
@@ -532,7 +559,7 @@ const TileLoader=function
             this.pErrMap = pErrMap;
 
         }
-        this.desc.date=dateString();
+        this.desc.date=dateString(true);
         this.startLoadTz(this.desc.files[0].zoom[0],0);
     }
 
@@ -827,6 +854,9 @@ const TileLoader=function
         let reqCount=this.desc.files[currentFIx].reqCount;
         if (!reqCount)
             reqCount=4;
+
+        //save log about count of tiles for save
+        this.saveObject2File("tileCounter_"+("0"+tz).slice(-2),{z:tz,count:arrTiles.length},currentFIx);
 
         for(let n=0;arrTiles.length>0 && n<reqCount;n++)
         {
