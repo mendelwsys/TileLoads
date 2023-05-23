@@ -11,6 +11,7 @@ const defNextScaleDelay=100; //Пауза перед следующим запр
 const defNextTileDelay=10; //Пауза перед следующим запросо тайла по умолчанию
 const testTimeOut = 100; //Применяется для тестирования.
 const findFormat=/image\/(\w+)/;
+const findExt=/(\w+)\/(\w+)/;
 const defRequestCount = 4; //Кол-во потоков скачивания по умолчанию
 let waitDownLoadTimeOut = 20000; //Ожидание того, что все сделанные на сервер запросы будут завершены
 let checkTimeout=500; //пауза перед проверкой, того что все сделанные запросы завершены
@@ -424,6 +425,23 @@ const saveDescriptor2File=function(desc,currentFIx)
     if (_tileLoader!==undefined)
         desc.tileLoader=_tileLoader;
 }
+
+const isImageMagicNumber=function (data)
+{
+    /*
+        FF D8 FF E0 - jpg
+        89 50 4E 47 0D 0A 1A 0A - png
+        42 4D - bmp
+     */
+      if (data.length>=2)
+      {
+          return (data[0]===0xFF && data[1]===0xD8) //jpg
+              || (data[0]===0x89 && data[1]===0x50) //png
+              || (data[0]===0x42 && data[1]===0x40) //bmp
+      }
+      return false;
+}
+
 /**
  *
  * @param desc - Loader descriptor ( see in startLoader.js example )
@@ -867,12 +885,60 @@ const TileLoader=function
         }
     }
 
-    this.writeTile=function (tile,arrTiles,currentFIx,data)
+
+    this.isImageBuffer=function (isImage,currentFIx, buffer)
+    {
+        if (!isImage || this.desc.files[currentFIx].checkStream)
+        {
+            if (this.desc.files[currentFIx].isImageMagicNumber)
+                return this.desc.files[currentFIx].isImageMagicNumber(buffer);
+            else
+                return isImageMagicNumber(buffer);
+        }
+        return isImage;
+    }
+
+    this.writeTile=function (tile,arrTiles,currentFIx,data,contentType)
     {
         const path = __dirname + '/'+this.desc.files[currentFIx].prefix+'/'+tile.z+'/';
         if (!fs.existsSync(path))
             fs.mkdirSync(path,{ recursive: true });
-        fs.writeFileSync(path+this.desc.files[currentFIx].prefix+tile.z+'_'+tile.y+'_'+tile.x+'.'+this.ext[currentFIx],data.read());
+
+
+        let extF=this.ext[currentFIx];
+        let isImage=false;
+        if (contentType!=null && contentType!=="")
+        {
+            let aExt=contentType.match(findFormat)
+            if (aExt && aExt.length>1)
+            {
+                extF=aExt[1];
+                isImage=true;
+            }
+            else
+            {
+                let aExt=contentType.match(findExt);
+                extF="unknown";
+                if (aExt && aExt.length>2)
+                    extF=aExt[2];
+            }
+        }
+
+        let buffer = data.read();
+        isImage = this.isImageBuffer(isImage,currentFIx, buffer);
+
+        if (isImage)
+            fs.writeFileSync(path+this.desc.files[currentFIx].prefix+tile.z+'_'+tile.y+'_'+tile.x+'.'+extF,buffer);
+        else
+        {
+            const path = __dirname + '/'+this.desc.files[currentFIx].prefix+'/_eFiles/'+tile.z+'/';
+            if (!fs.existsSync(path))
+                fs.mkdirSync(path,{ recursive: true });
+            fs.writeFileSync(path+this.desc.files[currentFIx].prefix+tile.z+'X'+tile.y+'X'+tile.x+'.'+extF,buffer);
+            if (this.desc.files[currentFIx].repeatGetErrorFiles)
+                this.push2ErrMap(tile, {contentType:contentType,isImage:isImage}, currentFIx);
+        }
+
         this.loadNextTile(tile,arrTiles,currentFIx);
 
         // if (arrTiles.length===0) //
@@ -984,6 +1050,7 @@ const TileLoader=function
                         const request=requester.get(url.href,options, (res) =>
                         {
 
+                            let contentType="";
                             if (res.statusCode !== 200)
                             {
                                 // console.error(`Did not get an OK from the server. Code: ${res.statusCode}`);
@@ -996,6 +1063,10 @@ const TileLoader=function
                                     tile=null;
                                 }
                                 return;
+                            }
+                            else
+                            {
+                                contentType=res.headers["content-type"];
                             }
 
                             let data = new Stream();
@@ -1019,7 +1090,7 @@ const TileLoader=function
                                     if (tile!=null)
                                     {
                                         this.endReq++;
-                                        this.writeTile(tile, arrTiles, currentFIx, data)
+                                        this.writeTile(tile, arrTiles, currentFIx, data,contentType)
                                         tile = null;
                                     }
                                 }
@@ -1078,6 +1149,7 @@ module.exports={
     createUrlSZYX,
     getBBoxByTile,
     createUrlBBox,
-    simpleConverter
+    simpleConverter,
+    isImageMagicNumber
 }
 

@@ -213,7 +213,6 @@ var tasks=
     //         }],
     // }
     // ,
-    //
     // {
     //     container:"mbtiles",
     //     areaName:"ArcGISBackGround",
@@ -264,7 +263,8 @@ var tasks=
     //             sysName: "KirLes",
     //             source: "wmsTileService",
     //             prefix: "RASTER_kirles_",
-    //             url:"https://kyrles.akadem.ru/gisServer/geoserver/wms?LAYERS=citorus:ForMen&service=WMS&request=GetMap&layers=citorus%3AForMen&styles=&format=image%2Fpng&transparent=true&version=1.1.1&srs=EPSG%3A3857&test=0.18172415236394368&width=256&height=256&bbox={bbox}",
+    //             url:"https://kyrles.akadem.ru/geoserver/citorus/wms?LAYERS=citorus:GROUP_e6c87c56fd8e9d75a3068c4a63f678d1d",
+    //             // url:"https://kyrles.akadem.ru/gisServer/geoserver/wms?LAYERS=citorus:ForMen&service=WMS&request=GetMap&layers=citorus%3AForMen&styles=&format=image%2Fpng&transparent=true&version=1.1.1&srs=EPSG%3A3857&test=0.18172415236394368&width=256&height=256&bbox={bbox}",
     //             headers: //Заголово для формирования запроса к серверу.
     //             {
     //                 "Referer":"https://kyrles.akadem.ru/lesfondgeo/",
@@ -283,7 +283,6 @@ var tasks=
     //             reqCount:5, //Кол-во  одновременных запросов к серверу по умолчанию 4
     //             fCreateUrl:TileModule.createUrlBBox, //Функция формирования урла запроса тайла у сервера
     //             fConverter:TileModule.lonLat2Tile3857, //Функция преобразования координат из долготы широты в тайл
-    //
     //             options:
     //                 {
     //                     constructorOptions:
@@ -311,14 +310,16 @@ var tasks=
                 sysName: "Google",
                 source: "wmsTileService",
                 prefix: "RASTER_Google_",
-                //url: "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru", //
+                // url: "https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru", //
+                // url: "https://ecs.syr.edu/faculty/fawcett/Handouts/cse775/code/calcWebService/Calc.asmx?WSDL",
+                // url:"https://kyrles.akadem.ru/geoserver/citorus/wms?LAYERS=citorus:GROUP_e6c87c56fd8e9d75a3068c4a63f678d1d",
                 url: "http://mt{s.}google.com/vt/lyrs=y@176103410&x={x}&y={y}&z={z}&s=Galileo&scale=1&hl=ru",
                 headers: {
                     "Referer": "https://www.google.com/maps/"
                     , "Connection": "keep-alive"
                     , "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"
                     , "Accept": "image/webp,image/apng,image/*,*/*;q=0.8"
-                    , "Accept-Encoding": "gzip, deflate"
+                    // , "Accept-Encoding": "gzip, deflate"
                     , "Accept-Language": "ru,en-US;q=0.9,en;q=0.8"
                 },
                 /*    {
@@ -331,6 +332,9 @@ var tasks=
                 nextTileDelay:300,
                 fCreateUrl:TileModule.createUrlSZYX,
                 fConverter:TileModule.lonLat2Tile3857,
+                // checkStream:false, //Проверять входящий поток в любом случае
+                // repeatGetErrorFiles:false, //Не повторять считывание ошибочного файла
+                // isImageMagicNumber:TileModule.isImageMagicNumber//Функция проверки потока на префикс изображений
                 options:
                     {
                         constructorOptions:
@@ -343,7 +347,7 @@ var tasks=
                             }
                     },
                 reqCount:32,
-                zoom:[13,15]
+                zoom:[1,7]
             }],
     }
 ]
