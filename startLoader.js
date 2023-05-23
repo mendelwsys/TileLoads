@@ -357,7 +357,7 @@ tasks.forEach
         for (let ix=0;ix<desc.files.length;ix++)
             TileModule.saveDescriptor2File(desc,ix);
 
-        desc.tileLoader = new TileModule.TileLoader(desc,1); //Use Debug mode===2 for debugging error handler without requests to server
+        desc.tileLoader = new TileModule.TileLoader(desc); //Use Debug mode===2 for debugging error handler without requests to server
 
         const callBackAfterLoad=function (timeout) {
             let _errCount = 0;
