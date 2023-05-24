@@ -381,7 +381,7 @@ tasks.forEach
                     setTimeout
                     (
                         () => {
-                            desc.tileLoader.resetLoader();
+                            desc.tileLoader.resetLoader();//Reset states of loader
                             desc.tileLoader.startLoading(callBackAfterLoad, errMap)
                         },
                         TileModule.defPauseBeforeNextAttempt

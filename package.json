@@ -1,9 +1,20 @@
 {
-  "name": "TileLoads",
-  "version": "1.0.0",
+  "name": "tile-loader",
+  "version": "0.0.0",
+  "description": "TileLoader",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "devDependencies": {
+    "axios": "^1.4.0",
+    "eslint": "^8.41.0",
+    "https": "^1.0.0",
+    "stream": "^0.0.2"
+  },
+  "eslintConfig": {},
   "dependencies": {
     "@mapbox/mbtiles": "^0.12.1",
-    "get-pixels": "^3.3.3",
     "sqlite3": "^5.1.6",
     "tape": "^5.6.3"
   }
