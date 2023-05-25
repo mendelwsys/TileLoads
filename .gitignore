@@ -10,3 +10,7 @@
 /obj/Debug
 *.sln
 *.njsproj
+/mbtile/GoogleBackGround.mbtiles
+/RASTER_Google_
+*.user
+/.vs/TileLoader/v17
